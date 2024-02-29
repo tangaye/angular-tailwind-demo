@@ -7,6 +7,7 @@ import { LandingPageComponent } from './landing-page/landing-page.component';
 import { UsersComponent } from './users/users.component';
 import { ClassListComponent } from './class-list/class-list.component';
 import { CreateClassComponent } from './create-class/create-class.component';
+import { QuestionnaireComponent } from './questionnaire/questionnaire.component';
 
 @NgModule({
     declarations: [
@@ -14,7 +15,8 @@ import { CreateClassComponent } from './create-class/create-class.component';
         LandingPageComponent,
         UsersComponent,
         ClassListComponent,
-        CreateClassComponent
+        CreateClassComponent,
+        QuestionnaireComponent
     ],
     imports: [
         BrowserModule,

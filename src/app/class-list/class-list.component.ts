@@ -1,13 +1,74 @@
-import { Component } from '@angular/core';
 import { ClassItem } from './class';
+import { EzyTables } from 'ezytables';
+import { Component } from '@angular/core';
 
 @Component({
     selector: 'app-class-list',
     templateUrl: './class-list.component.html',
 })
 export class ClassListComponent {
-    title = "Manage Classes"
 
+    ngOnInit() {
+
+        const customRender = (data: any) => {
+
+            // Replace this with your custom rendering logic
+            const tableBody = document.querySelector("#classes-table tbody");
+            if (tableBody) {
+
+                tableBody.innerHTML = "";
+
+                data.forEach((item: ClassItem) => {
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                   		<td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">${item.name}</td>
+                    	<td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">${item.year}</td>
+                    	<td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">${item.quarters}</td>
+                    	<td class="whitespace-wrap px-3 py-4 text-sm text-gray-500">${item.description}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+
+                // Display pagination info
+                const pageInfo = document.querySelector("#paginationInfo");
+                if (pageInfo) pageInfo.textContent = `${easyTable.getShowingInfo()}`;
+            }
+        };
+
+
+        const easyTable = new EzyTables({
+            data: this.classes,
+            renderFunction: customRender,
+            clientEnabled: true,
+            client: {
+                perPage: 5,
+                limit: 10
+            },
+        });
+
+        const prevButton = document.querySelector("#prevButton");
+        const nextButton = document.querySelector("#nextButton");
+        const perPageEl = document.querySelector("#per-page");
+        const searchInput: HTMLInputElement | null = document.querySelector("#search");
+
+        if (searchInput && prevButton && nextButton && perPageEl) {
+            searchInput.addEventListener("input", () => {
+                easyTable.setSearchDebounced(searchInput?.value);
+            });
+            prevButton.addEventListener("click", () => {
+                easyTable.prevPage();
+            });
+            nextButton.addEventListener("click", () => {
+                easyTable.nextPage();
+            });
+            perPageEl.addEventListener("change", (e: any) => {
+                easyTable.setPerPage(Number(e.target?.value || 5))
+            })
+        }
+    }
+
+    title = "Manage Classes"
+    perPage = [5, 10, 15, 20]
     classes: ClassItem[] = [
         {
             name: "NUVention Web + Media 2018",
